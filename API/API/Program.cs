@@ -22,4 +22,20 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapPost("/login", (LoginDTO loginDTO) =>
+{
+    if (loginDTO.Email == "adm@test.com" && loginDTO.Password == "123456")
+        return Results.Ok("Successful login");
+    else
+        return Results.Unauthorized();
+
+});
+
+
 app.Run();
+
+public class LoginDTO
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+}
