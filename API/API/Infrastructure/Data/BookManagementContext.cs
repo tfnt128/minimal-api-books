@@ -12,6 +12,7 @@ namespace API.Infrastructure.Data
 
         private string _connectionStringRemote = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookManagementV0;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
         public DbSet<Administrator> administrators { get; set; }
+        public DbSet<Book> books { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
