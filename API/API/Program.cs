@@ -1,6 +1,13 @@
+using API.Domain.DTOs;
+using API.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<BookManagementContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RemoteConnection")));
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -34,8 +41,3 @@ app.MapPost("/login", (LoginDTO loginDTO) =>
 
 app.Run();
 
-public class LoginDTO
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
-}
