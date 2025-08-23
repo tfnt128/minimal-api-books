@@ -24,7 +24,7 @@ namespace API.Domain.Services
             return _context.books.Where(v => v.Id == id).FirstOrDefault();
         }
 
-        public List<Book> GetAllBooks(int page = 1, string bookName = null, string authorName = null)
+        public List<Book> GetAllBooks(int? page = 1, string bookName = null, string authorName = null)
         {
             var query = _context.books.AsQueryable();
             if(!string.IsNullOrEmpty(bookName))
@@ -33,7 +33,9 @@ namespace API.Domain.Services
             }
 
             int pageItems = 10;
-            query = query.Skip((page - 1) * pageItems).Take(pageItems);
+
+            if(page != null)  
+                query = query.Skip((int)(page - 1) * pageItems).Take(pageItems);
 
             return query.ToList();
         }

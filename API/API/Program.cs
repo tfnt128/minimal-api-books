@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using API.Domain.Interfaces;
 using API.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
+using API.Domain.Entities;
 
+#region Services
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IAdministratorService, AdministratorService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 // Add services to the container.
 builder.Services.AddDbContext<BookManagementContext>(options =>
@@ -26,16 +29,86 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+#endregion
 
-app.MapPost("/login", ([FromBody]LoginDTO loginDTO, IAdministratorService administratorService) =>
+#region Administrators
+app.MapPost("/administrators/login", ([FromBody]LoginDTO loginDTO, IAdministratorService administratorService) =>
 {
     if (administratorService.Login(loginDTO) != null)
         return Results.Ok("Successful login");
     else
         return Results.Unauthorized();
 
-});
+}).WithTags("Administrators");
+#endregion
 
+#region Books
+app.MapPost("/books", ([FromBody] BookDTO bookDTO, IBookService bookService) =>
+{
+    var book = new Book
+    {
+        BookName = bookDTO.BookName,
+        AuthorName = bookDTO.AuthorName,
+        Year = bookDTO.Year,
+        Status = bookDTO.Status
+    };
+    bookService.AddBook(book);
+
+    return Results.Created($"/books/{book.Id}", book);
+
+}).WithTags("Books");
+app.MapGet("/books", ([FromQuery]int? page, IBookService bookService) =>
+{
+    var books = bookService.GetAllBooks(page);
+
+    return Results.Ok(books);
+
+}).WithTags("Books");
+
+app.MapGet("/books/{id}", ([FromRoute] int id, IBookService bookService) =>
+{
+    var book = bookService.GetBookById(id);
+
+    if (book == null)
+        return Results.NotFound();
+
+    return Results.Ok(book);
+
+}).WithTags("Books");
+
+app.MapPut("/books/{id}", ([FromRoute] int id, BookDTO bookDTO ,IBookService bookService) =>
+{
+    var book = bookService.GetBookById(id);
+
+    if (book == null)
+        return Results.NotFound();
+
+    book.BookName = bookDTO.BookName;
+    book.AuthorName = bookDTO.AuthorName;
+    book.Year = bookDTO.Year;
+    book.Status = bookDTO.Status;
+
+    bookService.UpdateBook(book);
+
+    return Results.Ok(book);
+
+}).WithTags("Books");
+
+app.MapDelete("/books/{id}", ([FromRoute] int id, IBookService bookService) =>
+{
+    var book = bookService.GetBookById(id);
+
+    if (book == null)
+        return Results.NotFound();
+
+    bookService.DeleteBook(book);
+
+    return Results.NoContent();
+
+}).WithTags("Books");
+#endregion
+
+#region App
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -44,4 +117,4 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
-
+#endregion
