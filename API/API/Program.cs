@@ -1,8 +1,13 @@
 using API.Domain.DTOs;
 using API.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using API.Domain.Interfaces;
+using API.Domain.Services;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IAdministratorService, AdministratorService>();
 
 // Add services to the container.
 builder.Services.AddDbContext<BookManagementContext>(options =>
@@ -29,9 +34,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapPost("/login", (LoginDTO loginDTO) =>
+app.MapPost("/login", ([FromBody]LoginDTO loginDTO, IAdministratorService administratorService) =>
 {
-    if (loginDTO.Email == "adm@test.com" && loginDTO.Password == "123456")
+    if (administratorService.Login(loginDTO) != null)
         return Results.Ok("Successful login");
     else
         return Results.Unauthorized();

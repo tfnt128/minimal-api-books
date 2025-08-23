@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "C:\\Workstation\\minimal-api-books\\API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Workstation\\minimal-api-books\\API\\API\\Migrations\\20250823162118_AdministratorMigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:API\\Migrations\\20250823162118_AdministratorMigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|c:\\workstation\\minimal-api-books\\api\\api\\infrastructure\\data\\bookmanagementcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|solutionrelative:api\\infrastructure\\data\\bookmanagementcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|c:\\workstation\\minimal-api-books\\api\\api\\domain\\entities\\administrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|solutionrelative:api\\domain\\entities\\administrator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|c:\\workstation\\minimal-api-books\\api\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|c:\\workstation\\minimal-api-books\\api\\api\\domain\\services\\administratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|solutionrelative:api\\domain\\services\\administratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|c:\\workstation\\minimal-api-books\\api\\api\\domain\\interfaces\\iadministratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|solutionrelative:api\\domain\\interfaces\\iadministratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{127A9C7F-31DF-4E67-874D-E60AE972E8D7}|API\\API.csproj|c:\\workstation\\minimal-api-books\\api\\api\\domain\\dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,63 +26,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "20250823162118_AdministratorMigration.cs",
-              "DocumentMoniker": "C:\\Workstation\\minimal-api-books\\API\\API\\Migrations\\20250823162118_AdministratorMigration.cs",
-              "RelativeDocumentMoniker": "API\\Migrations\\20250823162118_AdministratorMigration.cs",
-              "ToolTip": "C:\\Workstation\\minimal-api-books\\API\\API\\Migrations\\20250823162118_AdministratorMigration.cs",
-              "RelativeToolTip": "API\\Migrations\\20250823162118_AdministratorMigration.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAARAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "IAdministratorService.cs",
+              "DocumentMoniker": "C:\\Workstation\\minimal-api-books\\API\\API\\Domain\\Interfaces\\IAdministratorService.cs",
+              "RelativeDocumentMoniker": "API\\Domain\\Interfaces\\IAdministratorService.cs",
+              "ToolTip": "C:\\Workstation\\minimal-api-books\\API\\API\\Domain\\Interfaces\\IAdministratorService.cs",
+              "RelativeToolTip": "API\\Domain\\Interfaces\\IAdministratorService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-23T16:21:18.63Z",
+              "WhenOpened": "2025-08-23T16:45:35.517Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "BookManagementContext.cs",
-              "DocumentMoniker": "C:\\Workstation\\minimal-api-books\\API\\API\\Infrastructure\\Data\\BookManagementContext.cs",
-              "RelativeDocumentMoniker": "API\\Infrastructure\\Data\\BookManagementContext.cs",
-              "ToolTip": "C:\\Workstation\\minimal-api-books\\API\\API\\Infrastructure\\Data\\BookManagementContext.cs",
-              "RelativeToolTip": "API\\Infrastructure\\Data\\BookManagementContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAJAAAAAAAAAA==",
+              "Title": "AdministratorService.cs",
+              "DocumentMoniker": "C:\\Workstation\\minimal-api-books\\API\\API\\Domain\\Services\\AdministratorService.cs",
+              "RelativeDocumentMoniker": "API\\Domain\\Services\\AdministratorService.cs",
+              "ToolTip": "C:\\Workstation\\minimal-api-books\\API\\API\\Domain\\Services\\AdministratorService.cs",
+              "RelativeToolTip": "API\\Domain\\Services\\AdministratorService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-23T16:02:46.46Z",
+              "WhenOpened": "2025-08-23T16:41:22.093Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Administrator.cs",
-              "DocumentMoniker": "C:\\Workstation\\minimal-api-books\\API\\API\\Domain\\Entities\\Administrator.cs",
-              "RelativeDocumentMoniker": "API\\Domain\\Entities\\Administrator.cs",
-              "ToolTip": "C:\\Workstation\\minimal-api-books\\API\\API\\Domain\\Entities\\Administrator.cs",
-              "RelativeToolTip": "API\\Domain\\Entities\\Administrator.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-23T16:04:44Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Workstation\\minimal-api-books\\API\\API\\Program.cs",
               "RelativeDocumentMoniker": "API\\Program.cs",
               "ToolTip": "C:\\Workstation\\minimal-api-books\\API\\API\\Program.cs",
               "RelativeToolTip": "API\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-22T21:37:06.715Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "LoginDTO.cs",
               "DocumentMoniker": "C:\\Workstation\\minimal-api-books\\API\\API\\Domain\\DTOs\\LoginDTO.cs",
               "RelativeDocumentMoniker": "API\\Domain\\DTOs\\LoginDTO.cs",
@@ -94,8 +77,7 @@
               "RelativeToolTip": "API\\Domain\\DTOs\\LoginDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-23T15:02:10.798Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-23T15:02:10.798Z"
             }
           ]
         }

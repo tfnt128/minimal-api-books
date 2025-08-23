@@ -17,8 +17,7 @@
                 "$ref": "#/components/schemas/LoginDTO"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {

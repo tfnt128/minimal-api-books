@@ -13,6 +13,17 @@ namespace API.Infrastructure.Data
         private string _connectionStringRemote = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=BookManagementV0;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
         public DbSet<Administrator> administrators { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Administrator>().HasData(new Administrator
+            {
+                Id = 1,
+                Email = "adm@test.com",
+                Password = "123456",
+                Profile = "Adm"
+            });
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
