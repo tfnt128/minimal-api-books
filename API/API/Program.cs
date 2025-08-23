@@ -6,6 +6,7 @@ using API.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using API.Domain.Entities;
 using API.Domain.ModelViews;
+using API.Domain.Enums;
 
 #region Services
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +40,77 @@ app.MapPost("/administrators/login", ([FromBody]LoginDTO loginDTO, IAdministrato
         return Results.Ok("Successful login");
     else
         return Results.Unauthorized();
+
+}).WithTags("Administrators");
+
+app.MapPost("/administrators", ([FromBody] AdministratorDTO adminstratorDTO , IAdministratorService administratorService) =>
+{
+    var validation = new ValidationErrors { 
+        Errors = new List<string>()
+    };
+
+    if(string.IsNullOrEmpty(adminstratorDTO.Email))
+        validation.Errors.Add("Email is required.");
+
+    if (string.IsNullOrEmpty(adminstratorDTO.Password))
+        validation.Errors.Add("Password is required.");
+
+    if (adminstratorDTO.Profile == null)
+        validation.Errors.Add("Profile is required.");
+
+    if (validation.Errors.Count > 0)
+        return Results.BadRequest(validation);
+
+    Profile profile = (Profile)adminstratorDTO.Profile;
+
+    var adm = new Administrator
+    {
+        Email = adminstratorDTO.Email,
+        Password = adminstratorDTO.Password,
+        Profile = profile.ToString()
+    };
+    administratorService.AddAdministrator(adm);
+
+    return Results.Created($"/administrators/{adm.Id}", new AdministratorModelView
+    {
+        Id = adm.Id,
+        Email = adm.Email,
+        Profile = adm.Profile
+    });
+
+}).WithTags("Administrators");
+
+app.MapGet("/administrators", ([FromQuery] int? page, IAdministratorService administratorService) =>
+{
+    var adms = new List<AdministratorModelView>();
+    var administrators = administratorService.GetAllAdministrators(page);
+
+    foreach (var adm in administrators)
+    {
+        adms.Add(new AdministratorModelView
+        {
+            Id = adm.Id,
+            Email = adm.Email,
+            Profile = adm.Profile
+        });
+    }
+
+    return Results.Ok(adms);
+}).WithTags("Administrators");
+
+app.MapGet("/administrators/{id}", ([FromRoute] int id, IAdministratorService administratorService) =>
+{
+    var adm = administratorService.GetAdministratorById(id);
+
+    if(adm == null)
+        return Results.NotFound();
+
+    return Results.Ok(new AdministratorModelView
+    {
+        Id = adm.Id,
+        Email = adm.Email,
+        Profile = adm.Profile
+    });
 
 }).WithTags("Administrators");
 #endregion
