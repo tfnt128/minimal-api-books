@@ -5,6 +5,7 @@ using API.Domain.Interfaces;
 using API.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using API.Domain.Entities;
+using API.Domain.ModelViews;
 
 #region Services
 var builder = WebApplication.CreateBuilder(args);
@@ -42,9 +43,32 @@ app.MapPost("/administrators/login", ([FromBody]LoginDTO loginDTO, IAdministrato
 }).WithTags("Administrators");
 #endregion
 
+
+ValidationErrors validDTO(BookDTO bookDTO)
+{
+    var validation = new ValidationErrors { 
+    Errors = new List<string>()
+    };
+
+    if (string.IsNullOrEmpty(bookDTO.BookName))
+        validation.Errors.Add("Book name is required.");
+
+    if (string.IsNullOrEmpty(bookDTO.AuthorName))
+        validation.Errors.Add("Author Name is required.");
+
+    if (bookDTO.Year < 100)
+        validation.Errors.Add("Books is too old, only a book of the year 100 or more are acceptable");
+
+    return validation;
+}
 #region Books
 app.MapPost("/books", ([FromBody] BookDTO bookDTO, IBookService bookService) =>
-{
+{    
+    var validation = validDTO(bookDTO);
+
+    if(validation.Errors.Count > 0)    
+        return Results.BadRequest(validation);
+
     var book = new Book
     {
         BookName = bookDTO.BookName,
@@ -78,6 +102,11 @@ app.MapGet("/books/{id}", ([FromRoute] int id, IBookService bookService) =>
 
 app.MapPut("/books/{id}", ([FromRoute] int id, BookDTO bookDTO ,IBookService bookService) =>
 {
+    var validation = validDTO(bookDTO);
+
+    if (validation.Errors.Count > 0)
+        return Results.BadRequest(validation);
+
     var book = bookService.GetBookById(id);
 
     if (book == null)
