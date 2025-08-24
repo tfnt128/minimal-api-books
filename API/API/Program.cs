@@ -7,9 +7,35 @@ using Microsoft.AspNetCore.Mvc;
 using API.Domain.Entities;
 using API.Domain.ModelViews;
 using API.Domain.Enums;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 #region Services
 var builder = WebApplication.CreateBuilder(args);
+
+var key = builder.Configuration.GetSection("Jwt").ToString();
+
+if (string.IsNullOrEmpty(key)) key = "123456";
+
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(option =>
+{
+    option.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+    };
+});
 
 builder.Services.AddScoped<IAdministratorService, AdministratorService>();
 builder.Services.AddScoped<IBookService, BookService>();
@@ -22,26 +48,80 @@ builder.Services.AddDbContext<BookManagementContext>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        In = ParameterLocation.Header,
+        Description = "Insert JWT Token here"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
 #endregion
 
 #region Administrators
+
+string GenerateJwtToken(Administrator administrator)
+{
+    if (string.IsNullOrEmpty(key)) return string.Empty;
+
+    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+
+    var claims = new List<Claim>
+    {
+        new Claim("Email", administrator.Email),       
+        new Claim("Profile", administrator.Profile),
+        new Claim(ClaimTypes.Role, administrator.Profile)
+    };
+    var token = new JwtSecurityToken(
+        claims: claims,
+        expires: DateTime.Now.AddDays(1),
+        signingCredentials: credentials
+        );
+
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}
+
 app.MapPost("/administrators/login", ([FromBody]LoginDTO loginDTO, IAdministratorService administratorService) =>
 {
-    if (administratorService.Login(loginDTO) != null)
-        return Results.Ok("Successful login");
+    var adm = administratorService.Login(loginDTO);
+    if (adm != null)
+    {
+        string token = GenerateJwtToken(adm);
+        return Results.Ok(new AdministratorLogged
+        {
+            Email = adm.Email,
+            Profile = adm.Profile,
+            Token = token
+        });
+    }
     else
         return Results.Unauthorized();
 
-}).WithTags("Administrators");
+}).AllowAnonymous().WithTags("Administrators");
 
 app.MapPost("/administrators", ([FromBody] AdministratorDTO adminstratorDTO , IAdministratorService administratorService) =>
 {
@@ -78,7 +158,9 @@ app.MapPost("/administrators", ([FromBody] AdministratorDTO adminstratorDTO , IA
         Profile = adm.Profile
     });
 
-}).WithTags("Administrators");
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+.WithTags("Administrators");
 
 app.MapGet("/administrators", ([FromQuery] int? page, IAdministratorService administratorService) =>
 {
@@ -96,7 +178,9 @@ app.MapGet("/administrators", ([FromQuery] int? page, IAdministratorService admi
     }
 
     return Results.Ok(adms);
-}).WithTags("Administrators");
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm"})
+.WithTags("Administrators");
 
 app.MapGet("/administrators/{id}", ([FromRoute] int id, IAdministratorService administratorService) =>
 {
@@ -112,10 +196,12 @@ app.MapGet("/administrators/{id}", ([FromRoute] int id, IAdministratorService ad
         Profile = adm.Profile
     });
 
-}).WithTags("Administrators");
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+.WithTags("Administrators");
 #endregion
 
-
+#region Validation
 ValidationErrors validDTO(BookDTO bookDTO)
 {
     var validation = new ValidationErrors { 
@@ -133,6 +219,8 @@ ValidationErrors validDTO(BookDTO bookDTO)
 
     return validation;
 }
+#endregion
+
 #region Books
 app.MapPost("/books", ([FromBody] BookDTO bookDTO, IBookService bookService) =>
 {    
@@ -152,14 +240,19 @@ app.MapPost("/books", ([FromBody] BookDTO bookDTO, IBookService bookService) =>
 
     return Results.Created($"/books/{book.Id}", book);
 
-}).WithTags("Books");
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor" })
+.WithTags("Books");
+
 app.MapGet("/books", ([FromQuery]int? page, IBookService bookService) =>
 {
     var books = bookService.GetAllBooks(page);
 
     return Results.Ok(books);
 
-}).WithTags("Books");
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor" })
+.WithTags("Books");
 
 app.MapGet("/books/{id}", ([FromRoute] int id, IBookService bookService) =>
 {
@@ -170,7 +263,9 @@ app.MapGet("/books/{id}", ([FromRoute] int id, IBookService bookService) =>
 
     return Results.Ok(book);
 
-}).WithTags("Books");
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm,Editor" })
+.WithTags("Books");
 
 app.MapPut("/books/{id}", ([FromRoute] int id, BookDTO bookDTO ,IBookService bookService) =>
 {
@@ -193,7 +288,9 @@ app.MapPut("/books/{id}", ([FromRoute] int id, BookDTO bookDTO ,IBookService boo
 
     return Results.Ok(book);
 
-}).WithTags("Books");
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+.WithTags("Books");
 
 app.MapDelete("/books/{id}", ([FromRoute] int id, IBookService bookService) =>
 {
@@ -206,7 +303,9 @@ app.MapDelete("/books/{id}", ([FromRoute] int id, IBookService bookService) =>
 
     return Results.NoContent();
 
-}).WithTags("Books");
+}).RequireAuthorization()
+.RequireAuthorization(new AuthorizeAttribute { Roles = "Adm" })
+.WithTags("Books");
 #endregion
 
 #region App
@@ -216,6 +315,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+app.MapControllers();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();
 #endregion
